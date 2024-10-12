@@ -1,0 +1,2 @@
+## Student's Performance Project
+The Student's Performance Project is a research project that aims to investigate the relationship between student performance and various other factors that affects his perforamnce
