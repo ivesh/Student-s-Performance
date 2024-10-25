@@ -48,8 +48,6 @@ class Datatransformation:
 
             input_features_test_df=test_df.drop(columns=[target_column],axis=1)
             target_feature_test_df=test_df[target_column]
-            print()
-            print(input_features_test_df)
             logging.info(f"Applying preprocessing techniques to transform train and test data.")
             input_feature_train_arr=preprocessing_obj.fit_transform(input_features_train_df)
             input_feature_test_arr=preprocessing_obj.transform(input_features_test_df)
