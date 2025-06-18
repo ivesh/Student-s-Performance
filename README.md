@@ -90,13 +90,31 @@ Stores logging files that help in debugging and tracking model training and data
 
 ### 📁 src/
 
-Main source code directory, organized into modular components.
+Main source code directory, organized into modular components. 
+
+- **exception.py** – Custom exception handling for consistent error messages.
+- **logger.py** – Centralized logging setup.
+- **utils.py** – Utility functions used across the pipeline (e.g., saving models, loading files).
+- **\_\_init\_\_.py** – Module initializer.
 
 #### 📁 components/
 
 - **data_ingestion.py** – Loads and splits the raw data into training and testing datasets.
-- **data_transformation.py** – Applies preprocessing to data (scaling, encoding, etc.).
-- **model_trainer.py** – Trains and evaluates the machine learning model.
+  - **Dataingestionconfig(class)**- Has a decorater dataclass to simplify the creation of classes that are primarily used to store data by automatically generating common methods and providing customization options. This dataingestionconfig class is made to define where training,test and raw data resides.
+  - **DataIngestion(class)**- Does not have a dataclass decorater as along with defining variables we also need to create functions for ingesting data from data sources along with having to perform train/test split.
+    - **def __init__(Function)**: Initializes the data ingestion config which contains the path of train, test and raw data.
+    - **def initiate_data_ingestion(Function)**: With logging and try catch bleck we are starting the reading of the data under src->notebook->data->student.csv. During this phase data can be read through different sources as required like MongoDB, SQL, or Big data. We then start loging the start of train/test spilt with the split being 80/20. By using the os python framework we also check if train_data even if availble we need to create a new path to store the train,test and raw data by performing train test split.
+- **data_transformation.py** – Applies preprocessing to data (scaling, encoding, column trasformer etc.). In this section we are using column transformer to trasform data in the form of pipeline where one hot encoding, standard scaling is performed in a step by step procedure.
+  - **DataTransformationConfig(Class)**- Any inputs received form the data ingestion has to be passed to data transformation.
+  - **DataTransformation(Class)**- Contains functions to handle categorical and numerical features.
+    - **def __init__(Function)**- Initializes the data transformation config which contains the path where the preprocessor.pkl file has to reside.
+    - **def get_data_transformation_obj**- A function to return the preprocessor object that contains column transformer along with steps within the pielines which transforms numerical column using imputer to handle missing values, and standard scalar. 
+    For Categorical colums we are handling the missing values using simple imputer's most frequent stratergy, one hot encoding, and standard scaling.
+    - **def initiate_data_transformation(Function, Parameters: Self, train_path,test_path)**: This function is responsible for generating preprocessor.pkl file which is the preprocessed data to be given for model training. We are splitting the train_df to input_training_data and target_training_data and test_df input_test_data and target_test_data to perform fit_transform and transform to convert the same to arrays. We also use np.c_ function in NumPy is used to concatenate arrays along the second axis (columns). 
+    Target column choosen is Math Score, however either total score or average score could also be taken as target score. We finally save the object as preprocessor.pkl under artifatcs folder.
+- **model_trainer.py** – Trains and evaluates the machine learning models.
+  - **def ModelTrainerConfig**: Contains the path where model.pkl is going to reside.
+  - **def ModelTrainer**-
 - **\_\_init\_\_.py** – Marks the folder as a Python module.
 
 #### 📁 notebook/
@@ -110,8 +128,8 @@ Main source code directory, organized into modular components.
 
 #### 📁 pipeline/
 
-- **exception.py** – Custom exception handling for consistent error messages.
-- **logger.py** – Centralized logging setup.
+- **predict_pipeline.py** – .
+- **train_pipeline.py** – Centralized logging setup.
 - **utils.py** – Utility functions used across the pipeline (e.g., saving models, loading files).
 - **\_\_init\_\_.py** – Module initializer.
 
