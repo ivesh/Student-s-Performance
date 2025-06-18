@@ -97,6 +97,7 @@ Main source code directory, organized into modular components.
 - **utils.py** – Utility functions used across the pipeline (e.g., saving models, loading files). This file contains functions:
   **def save_model**: Saves the model created in the picke file. 
   **def evaluate_model**: Takes parameter X_train,y_train, X_test, y_test, model and param. The evaluate model checks the best model with score values and with grid search cv and chooses the best model.
+  **def load_model** - Loads thr pickle file as read byte mode (rb). 
 
 - **\_\_init\_\_.py** – Module initializer.
 
@@ -214,7 +215,13 @@ Main source code directory, organized into modular components.
 
 #### 📁 pipeline/
 
-- **predict_pipeline.py** – .
+- **predict_pipeline.py** – Predict pipeline needs to predict the incoming feature data. It has 2 classes.
+  **PredicctPipeline(class)**-
+    **def __init__(function)** : Self initialized.
+    **def Predict**- Predicts the custom data fetched from HTML input with the path given for preprocesser.pkl and model.pkl saved under artifacts folder.
+  **CustomData(class)**- Mapping the html data from the user to the backend for prediction with the model.pkl file saved. 
+    **def __init__(Function)**- Self initialized with all the features which was required to train the model.
+    **def get_html_as_df(function)**- We are reading the html input features as dictionary and converting them to data frame as that's the way we trained our model.
 - **train_pipeline.py** – Centralized logging setup.
 - **utils.py** – Utility functions used across the pipeline (e.g., saving models, loading files).
 - **\_\_init\_\_.py** – Module initializer.
@@ -260,5 +267,14 @@ Contains metadata and information used when the project is packaged or distribut
 - math score
 - reading score
 - writing score
+
+## Deployment options- 
+- Elastic beanstalk Instance - To deploy in elastic bean stalk .ebextensions folder needs to be created under which python.config file should contain option setting. We have to make a new file called application.py and copy the flask code as AWS does not recognize app.py in config.
+  python.config- code
+    option_setting:
+      "aws:elasticbeanstalk:container:python":
+      WSGIPath:application:application
+
+
 
 
