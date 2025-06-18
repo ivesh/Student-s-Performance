@@ -94,7 +94,10 @@ Main source code directory, organized into modular components.
 
 - **exception.py** – Custom exception handling for consistent error messages.
 - **logger.py** – Centralized logging setup.
-- **utils.py** – Utility functions used across the pipeline (e.g., saving models, loading files).
+- **utils.py** – Utility functions used across the pipeline (e.g., saving models, loading files). This file contains functions:
+  **def save_model**: Saves the model created in the picke file. 
+  **def evaluate_model**: Takes parameter X_train,y_train, X_test, y_test, model and param. The evaluate model checks the best model with score values and with grid search cv and chooses the best model.
+
 - **\_\_init\_\_.py** – Module initializer.
 
 #### 📁 components/
@@ -114,7 +117,90 @@ Main source code directory, organized into modular components.
     Target column choosen is Math Score, however either total score or average score could also be taken as target score. We finally save the object as preprocessor.pkl under artifatcs folder.
 - **model_trainer.py** – Trains and evaluates the machine learning models.
   - **def ModelTrainerConfig**: Contains the path where model.pkl is going to reside.
-  - **def ModelTrainer**-
+  - **def ModelTrainer**- The parameters will consist of self, train array, test array. We divide our taining/test dataset X_train, y-train,X_test, y_test. And, choose models to train for our regression problem. 
+    "Linear Regression",
+    "Decision Tree Regressor",
+    "Random Forest Regressor",
+    "Gradient Boosting Regressor",
+    "AdaBoost Regressor",
+    "KNN Regressor", 
+    and "XGBoost Regressor".
+    
+    We also add hyperparameter tuning for each of these models.
+    
+      params = {
+      
+      "Decision Tree Regressor": {
+          'criterion': ['squared_error', 'friedman_mse', 'absolute_error', 'poisson'],  # Loss function to measure quality of a split
+          # 'splitter': ['best', 'random'],  # 'best' chooses best split, 'random' selects randomly (useful in bagging)
+          # 'max_features': ['sqrt', 'log2'],  # Number of features to consider at each split
+          # 'max_depth': [None, 5, 10, 20],  # Limit depth to control overfitting
+          # 'min_samples_split': [2, 5, 10],  # Min samples required to split an internal node
+          # 'min_samples_leaf': [1, 2, 4],  # Min samples required at each leaf node
+      },
+
+      "Random Forest Regressor": {
+          # 'criterion': ['squared_error', 'absolute_error'],  # Similar to Decision Tree
+          # 'max_features': ['sqrt', 'log2', None],  # Controls feature randomness, 'sqrt' is default
+          'n_estimators': [8, 16, 32, 64, 128, 256],  # Number of trees in the forest
+          # 'max_depth': [None, 10, 20],  # Tree depth to control overfitting
+          # 'min_samples_leaf': [1, 2, 4],  # Minimum samples at a leaf node
+          # 'n_jobs': [-1]  # Use all processors
+      },
+
+      "Gradient Boosting Regressor": {
+          'learning_rate': [.1, .01, .05, .001],  # Shrinks contribution of each tree
+          'subsample': [0.6, 0.7, 0.75, 0.8, 0.85, 0.9],  # % of samples used for each tree (stochastic)
+          'n_estimators': [8, 16, 32, 64, 128, 256],  # Number of boosting stages
+          # 'loss': ['squared_error', 'huber', 'absolute_error', 'quantile'],  # Use 'huber' for robustness to outliers
+          # 'criterion': ['squared_error', 'friedman_mse'],
+          # 'max_features': ['auto', 'sqrt', 'log2'],  # Control feature subset size at each split
+          # 'max_depth': [3, 5, 7],  # Tree depth for base learners
+      },
+
+      "Linear Regression": {
+          'fit_intercept': [True, False],  # Whether to calculate the intercept
+          'copy_X': [True, False],  # If False, input X may be overwritten (to save memory)
+          'positive': [True, False],  # Constrain coefficients to be positive (can help interpretability)
+          # 'n_jobs': [-1],  # Use all cores (only effective when y is multi-target or X is sparse)
+          # 'tol': [1e-4, 1e-6, 1e-8],  # Solver precision
+      },
+
+      "XGBRegressor": {
+          'learning_rate': [.1, .01, .05, .001],  # How much to shrink contribution of each tree
+          'n_estimators': [8, 16, 32, 64, 128, 256],  # Number of boosting rounds
+          # 'max_depth': [3, 4, 5, 6],  # Maximum depth of tree
+          # 'subsample': [0.6, 0.8, 1.0],  # Row sampling
+          # 'colsample_bytree': [0.6, 0.8, 1.0],  # Feature sampling
+          # 'reg_alpha': [0, 0.01, 0.1],  # L1 regularization
+          # 'reg_lambda': [0.1, 1.0],  # L2 regularization
+      },
+
+      "AdaBoost Regressor": {
+          'learning_rate': [.1, .01, 0.5, .001],  # Shrinks contribution of each weak learner
+          'n_estimators': [8, 16, 32, 64, 128, 256],  # Number of weak learners
+          # 'loss': ['linear', 'square', 'exponential'],  # Controls weight update, 'square' can penalize large errors more
+      },
+
+      "KNN Regressor": {
+          'n_neighbors': [3, 5, 7, 9, 11, 13],  # Number of neighbors to use
+          'weights': ['uniform', 'distance'],  # Weight function used in prediction
+          'algorithm': ['auto', 'ball_tree', 'kd_tree', 'brute'],  # Algorithm for neighbor search
+          # 'p': [1, 2],  # Distance metric: 1 = Manhattan, 2 = Euclidean
+      },
+
+      "XGBoost Regressor": {
+          'learning_rate': [.1, .01, .05, .001],  # Controls step size shrinkage
+          'n_estimators': [8, 16, 32, 64, 128, 256],  # Total trees to fit
+          'max_depth': [3, 4, 5, 6, 7, 8],  # Max depth of each tree
+          # 'subsample': [0.5, 0.75, 1.0],  # % of rows sampled per tree
+          # 'colsample_bytree': [0.5, 0.75, 1.0],  # % of columns per tree
+          # 'reg_lambda': [1.0, 0.1, 10],  # L2 regularization
+          # 'reg_alpha': [0, 0.1, 1],  # L1 regularization
+      }
+  }
+    - After Generating the report as to which model has performed the best using **evaluate model** function from utils we choose the best model store the value in best_model_score.
+   
 - **\_\_init\_\_.py** – Marks the folder as a Python module.
 
 #### 📁 notebook/
