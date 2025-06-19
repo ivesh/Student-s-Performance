@@ -274,6 +274,21 @@ Contains metadata and information used when the project is packaged or distribut
     option_setting:
       "aws:elasticbeanstalk:container:python":
       WSGIPath:application:application
+- **Docker Image**- To push it to amazon ECR(fully managed docker container to push docker images which are private) then can be downloaded to EC2 instance further. And, .github/workflow(Can be created under github actions which will have the yaml file needed for CI/CD pipelines) and dockerfile needs to be created. In steps:
+  Step 1: Dockerfile Build
+  Step 2: Github actions workflow
+  Step 3: I AM user to be created in Amazon console- (While creating you can specify 2 permission for this user Amazon EC2 container registory full access and Amazon EC2 Full access.)
+  Next->Users->Security credentials->Access Key(CLI)->create access key->Download csv file.
+  Next go to-> Elastic Container Registry(ECR)->New container->Copy the ECR url
+  Next EC2 instance-> Launch Instance-> Name(student performance), ubuntu(image), t2 medium (There will be charges hence have to delete it), ()->Lanch Instance -> Instaance ID-> Connect->Connect to ECR instance-> CLI will launch-> clear the screen
+  - When we launch our EC2 instance we need to install some packages for dockers.
+  Next, 
+  Step 1: sudo apt-get update -y, sudo apt-get upgrade -y
+  Step 2: curl -fsSL https://get.docker.com -o get-docker.sh
+  Step 3: sudo sh get-docker.sh
+  step 4: sudo usermod -aG docker ubuntu
+  Step 5: newgrp docker
+  - Create runner -> Git hub actions ->  
 
 
 
