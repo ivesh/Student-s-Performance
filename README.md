@@ -267,6 +267,174 @@ Contains metadata and information used when the project is packaged or distribut
 - math score
 - reading score
 - writing score
+## Model Evaluation
+
+## Model Explanations and Performance Analysis
+
+### Common Regression Metrics
+
+- **Root Mean Squared Error (RMSE):** Represents the standard deviation of prediction errors; lower is better.
+- **Mean Absolute Error (MAE):** Average absolute prediction error; lower is better.
+- **R² Score (Coefficient of Determination):** Proportion of the variance in the target variable explained by the model; closer to 1 indicates better fit.
+
+### 1. Linear Regression
+
+**How it Works:**  
+Fits a straight line by minimizing the squared differences between actual and predicted values. Assumes linear relationships between predictors and target.
+
+**Results:**
+
+|                | Train          | Test           |
+|----------------|---------------|----------------|
+| RMSE           | 5.3273        | 5.4096         |
+| MAE            | 4.2787        | 4.2259         |
+| R² Score       | 0.8741        | 0.8797         |
+
+**Evaluation:**  
+Linear regression gives a strong, consistent performance on both train and test sets, with high R² and low error metrics. The similarity between train and test metrics suggests the model generalizes well and is not overfitting.
+
+### 2. Lasso Regression
+
+**How it Works:**  
+Linear regression with L1 regularization, which can shrink some coefficients to zero, effectively performing feature selection and reducing model complexity.
+
+**Results:**
+
+|                | Train          | Test           |
+|----------------|---------------|----------------|
+| RMSE           | 6.5938        | 6.5197         |
+| MAE            | 5.2063        | 5.1579         |
+| R² Score       | 0.8071        | 0.8253         |
+
+**Evaluation:**  
+Regularization reduces potential overfitting but can slightly decrease performance if important features are shrunk too much. R² is lower than standard linear regression, indicating higher bias but possibly increasing robustness to data noise.
+
+### 3. Ridge Regression
+
+**How it Works:**  
+Linear regression with L2 regularization, penalizing large coefficients but without eliminating them. Helps prevent overfitting if there are many correlated predictors.
+
+**Results:**
+
+|                | Train          | Test           |
+|----------------|---------------|----------------|
+| RMSE           | 5.3233        | 5.3904         |
+| MAE            | 4.2650        | 4.2111         |
+| R² Score       | 0.8743        | 0.8806         |
+
+**Evaluation:**  
+Very similar performance to basic linear regression, indicating multicollinearity isn’t a large issue. Excellent generalization, high R², low RMSE and MAE.
+
+### 4. K-Neighbors Regressor
+
+**How it Works:**  
+Predicts target value based on the average of the k-nearest data points in feature space. Captures non-linear relationships but is sensitive to data density.
+
+**Results:**
+
+|                | Train          | Test           |
+|----------------|---------------|----------------|
+| RMSE           | 5.7122        | 7.2516         |
+| MAE            | 4.5187        | 5.6160         |
+| R² Score       | 0.8553        | 0.7839         |
+
+**Evaluation:**  
+Decent fit on the training data but noticeably poorer generalization (lower R² on test), suggesting some overfitting or sensitivity to data distribution. The model may benefit from tuning k or data preprocessing.
+
+### 5. Decision Tree
+
+**How it Works:**  
+Splits data into branches based on feature thresholds to minimize error at each node. Captures complex, non-linear relationships but can overfit easily.
+
+**Results:**
+
+|                | Train          | Test           |
+|----------------|---------------|----------------|
+| RMSE           | 0.2795        | 7.9549         |
+| MAE            | 0.0187        | 6.3000         |
+| R² Score       | 0.9997        | 0.7400         |
+
+**Evaluation:**  
+Extremely low errors and perfect R² on the training set — classic sign of overfitting. On test data, performance drops substantially, confirming poor generalization. Pruning or ensembling can help address this.
+
+### 6. Random Forest Regressor
+
+**How it Works:**  
+An ensemble of multiple decision trees, averaging their predictions to reduce overfitting and improve generalization.
+
+**Results:**
+
+|                | Train          | Test           |
+|----------------|---------------|----------------|
+| RMSE           | 2.3131        | 6.0242         |
+| MAE            | 1.8444        | 4.6728         |
+| R² Score       | 0.9763        | 0.8509         |
+
+**Evaluation:**  
+Shows much-reduced overfitting compared to a single decision tree, with strong train-set accuracy and much better generalization on test data. Indicates this ensemble method is robust.
+
+### 7. XGBRegressor
+
+**How it Works:**  
+Gradient boosting with decision trees; builds trees sequentially, each correcting predecessor’s errors. Known for high accuracy and effective handling of both linear and complex patterns.
+
+**Results:**
+
+|                | Train          | Test           |
+|----------------|---------------|----------------|
+| RMSE           | 1.0073        | 6.4733         |
+| MAE            | 0.6875        | 5.0577         |
+| R² Score       | 0.9955        | 0.8278         |
+
+**Evaluation:**  
+Extremely high performance on the training data—almost perfect fit—yet test errors are noticeably higher, showing mild overfitting. Still, this model captures nuanced relationships and may perform best with careful tuning and regularization.
+
+### 8. AdaBoost Regressor
+
+**How it Works:**  
+Boosting method that sequentially builds weak learners (like shallow trees), emphasizing data points most often mispredicted. Focuses on minimizing bias and improving accuracy.
+
+**Results:**
+
+|                | Train          | Test           |
+|----------------|---------------|----------------|
+| RMSE           | 5.9005        | 6.0026         |
+| MAE            | 4.8101        | 4.6575         |
+| R² Score       | 0.8456        | 0.8519         |
+
+**Evaluation:**  
+Balanced performance across train and test sets, with no sign of overfitting. Errors and R² are competitive with other robust models, indicating reliable generalization.
+
+## Summary Table
+
+| Model               | Train R² | Test R² | Train RMSE | Test RMSE | Overfitting?         | Comments                             |
+|---------------------|---------|---------|------------|-----------|----------------------|--------------------------------------|
+| Linear Regression   | 0.8741  | 0.8797  | 5.33       | 5.41      | No                   | Strong baseline                      |
+| Lasso               | 0.8071  | 0.8253  | 6.59       | 6.52      | No                   | Regularized, slightly lower fit      |
+| Ridge               | 0.8743  | 0.8806  | 5.32       | 5.39      | No                   | Handles multicollinearity well       |
+| K-Neighbors         | 0.8553  | 0.7839  | 5.71       | 7.25      | Moderate             | Lower generalization, sensitive      |
+| Decision Tree       | 0.9997  | 0.7400  | 0.28       | 7.95      | Extreme              | Overfits, consider pruning           |
+| Random Forest       | 0.9763  | 0.8509  | 2.31       | 6.02      | Minimal              | Good generalization                  |
+| XGBRegressor        | 0.9955  | 0.8278  | 1.01       | 6.47      | Some                 | Powerful, tune for overfitting       |
+| AdaBoost            | 0.8456  | 0.8519  | 5.90       | 6.00      | No                   | Stable, robust generalization        |
+
+## Final Evaluation
+
+- **Best Generalizers:** Linear Regression, Ridge, and Random Forest show strong and consistent train/test performance, indicating robust generalization.
+- **Potential Overfitting:** Decision Tree and XGBRegressor fit training data extremely well but generalize less effectively. These models may need regularization or more data.
+- **Recommendations:**  
+  - Use ensemble methods (Random Forest, AdaBoost) for generally robust results.
+  - Consider Linear or Ridge Regression for interpretability and stability.
+  - Tune hyperparameters for K-Neighbors, XGB, and Decision Tree to reduce overfitting.
+- **Metric Interpretation:**  
+  - Close train and test scores = good generalization.
+  - High train, much lower test scores = overfitting.
+  - R² approaching 1, low RMSE/MAE = strong predictive power.
+
+These analyses inform which models are best suited for production, balancing accuracy, generalizability, and interpretability.
+
+[1] https://ppl-ai-file-upload.s3.amazonaws.com/web/direct-files/attachments/36958646/58a26b06-e955-498b-b2a4-8d9f014dc601/Gen-AI-Lead.docx
+[2] https://ppl-ai-file-upload.s3.amazonaws.com/web/direct-files/attachments/36958646/987b8a54-484a-4604-a67f-6775db7f4459/Venkatesh_I.pdf-1.pdf
 
 ## Deployment options- 
 - Elastic beanstalk Instance - To deploy in elastic bean stalk .ebextensions folder needs to be created under which python.config file should contain option setting. We have to make a new file called application.py and copy the flask code as AWS does not recognize app.py in config.
